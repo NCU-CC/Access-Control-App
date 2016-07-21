@@ -1,0 +1,22 @@
+<ion-side-menus enable-menu-with-back-views="false">
+    <ion-side-menu-content>
+        <ion-nav-bar class="bar-calm">
+            <ion-nav-back-button></ion-nav-back-button>
+            <ion-nav-buttons side="left">
+                <button class="button button-icon button-clear ion-navicon" menu-toggle="left"></button>
+            </ion-nav-buttons>
+        </ion-nav-bar>
+        <ion-nav-view name="ac"></ion-nav-view>
+    </ion-side-menu-content>
+    <ion-side-menu side="left" id="ac">
+        <ion-header-bar class="bar-positive">
+            <div class="title">Access Control</div>
+        </ion-header-bar>
+        <ion-content padding="false" class="side-menu-left has-header">
+            <ion-list id="accessControl-list" class=" ">
+                <ion-item id="accessControl-entities" ui-sref="accessControl.entities" menu-close="" class="  ">Entities</ion-item>
+                <ion-item id="accessControl-users" ui-sref="accessControl.users" menu-close="" class="  ">Users</ion-item>
+            </ion-list>
+        </ion-content>
+    </ion-side-menu>
+</ion-side-menus>

@@ -1,0 +1,9 @@
+<ion-view title="Users" id="users" class=" ">
+    <ion-content padding="true" class="has-header">
+        <ion-list id="users-list" class=" manual-list-fullwidth ">
+            <ion-toggle ng-repeat="user in users">
+                {{user.name}}
+            </ion-toggle>
+        </ion-list>
+    </ion-content>
+</ion-view>
