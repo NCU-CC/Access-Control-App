@@ -23,12 +23,10 @@ angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.services',
     AccessControl.initialize();
 
     $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams, options) {
-       console.log(fromState);
        if (fromState.name == 'accessControl.users')
           document.getElementById('fab').classList.add('motion');
     });
     $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams) {
-       console.log(toState);
        Material.rede();
        if (toState.name == 'accessControl.users')
           $timeout(function() {
