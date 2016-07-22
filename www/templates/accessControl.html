@@ -13,7 +13,7 @@
            <h2 class="menu-bottom">{{user.id}}</h2>
         </ion-header-bar>
         <ion-content padding="false" class="side-menu-left has-expanded-header stable-bg has-header">
-            <ion-list id="accessControl-list" class="animate-ripple">
+            <ion-list id="accessControl-list">
                 <ion-item id="accessControl-entities" ui-sref="accessControl.entities" ng-if="user.type === 'admin'" menu-close="" class="ink">Entities</ion-item>
                 <ion-item id="accessControl-users" ui-sref="accessControl.users" ng-if="user.type === 'admin'" menu-close="" class="ink">Users</ion-item>
                 <ion-item id="accessControl-logout" ng-click="logout()" class="ink">Logout</ion-item>
