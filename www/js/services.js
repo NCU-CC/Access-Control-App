@@ -1,5 +1,16 @@
 angular.module('app.services', [])
 
+.service('AccessControl', ['OAuth', 'DoorClient', function(OAuth, DoorClient) {
+   this.initialize = function() {
+      OAuth.configure(window.config.oauth).getAccessToken(function(accessToken) {
+         DoorClient.configure({
+            baseUrl: window.config.doorUrl,
+            accessToken: accessToken
+         });
+      });
+   };
+}])
+
 .service('OAuth', ['$http', function($http){
    const codeRegex = /code=([^#&]*)(?:$|[#&])/
    const errorRegex = /error=([^#&]*)(?:$|[#&])/
@@ -23,6 +34,11 @@ angular.module('app.services', [])
       });
       return this;
    };
+
+   this.logout = function() {
+      tokenData = null;
+      localStorage.removeItem('tokenData');
+   }
 
    this.authorize = function() {
       var scopeQueryString = 'scope=' + config.scopes[0];
@@ -83,6 +99,7 @@ angular.module('app.services', [])
    var baseUrl;
    var queue = [];
    var user;
+   var whoAmICallbacks = [];
 
    this.configure = function(params) {
       baseUrl = params.baseUrl;
@@ -126,13 +143,18 @@ angular.module('app.services', [])
 
    this.getWhoAmI = function(callback) {
       if (typeof user === 'undefined') {
-         this.request('GET', '/whoami', function(data) {
-            user = {
-               type: data.type,
-               id: data.uid
-            };
-            callback(user);
-         });
+         whoAmICallbacks.push(callback);
+         if (whoAmICallbacks.length == 1) {
+            this.request('GET', '/whoami', function(data) {
+               user = {
+                  type: data.type,
+                  id: data.uid
+               };
+               angular.forEach(whoAmICallbacks, function(callback) {
+                  callback(user);
+               });
+            });
+         }
       } else
          callback(user);
    };
@@ -170,10 +192,15 @@ angular.module('app.services', [])
       }
    }
    this.de = function() {
+      $timeout(function() {
+         ionicMaterialInk.displayEffect();
+      }, 0);
+   }
+   this.rede = function() {
       this.reset();
       $timeout(function() {
          ionicMaterialInk.displayEffect();
          ionicMaterialMotion.ripple();
-      }, 0)
+      }, 0);
    };
 }]);

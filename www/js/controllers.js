@@ -36,18 +36,36 @@ angular.module('app.controllers', ['app.services'])
    };
    DoorClient.getUserEntities(function(data) {
       $scope.entities = data.content;
-      Material.de();
+      Material.rede();
    });
 })
 
 .controller('usersCtrl', function($scope, Material, DoorClient, $timeout) {
    DoorClient.getUsers(function(data) {
       $scope.users = data.content;
-      Material.de();
+      Material.rede();
    });
 })
 
-.controller('sideMenuCtrl', function($scope, Material, DoorClient) {
+.controller('sideMenuCtrl', function($scope, $ionicPopup, Material, AccessControl, OAuth, DoorClient) {
+   $scope.logout = function() {
+      $ionicPopup.show({
+         title: 'Logout?',
+         scope: $scope,
+         buttons: [
+            {text: 'No'},
+            {
+               text: 'Yes',
+               type: 'button-positive',
+               onTap: function(e) {
+                  OAuth.logout();
+                  AccessControl.initialize();
+               }
+            }
+         ]
+      });
+      Material.de();
+   };
    DoorClient.getWhoAmI(function(user) {
       $scope.user = user;
    });
