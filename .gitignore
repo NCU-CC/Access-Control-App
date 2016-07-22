@@ -8,3 +8,4 @@ www/lib
 www/js/config.js
 .io-config.json
 *.swp
+*.DS_Store
