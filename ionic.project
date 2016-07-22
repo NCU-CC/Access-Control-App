@@ -1,4 +1,12 @@
 {
   "name": "Entity",
-  "app_id": "b9cd30e4"
+  "app_id": "b9cd30e4",
+  "gulpStartupTasks": [
+    "sass",
+    "watch"
+  ],
+  "watchPatterns": [
+    "www/**/*",
+    "!www/lib/**/*"
+  ]
 }

@@ -31,9 +31,10 @@ angular.module('app.routes', [])
   .state('accessControl', {
     url: '/ac',
     templateUrl: 'templates/accessControl.html',
+    controller: 'sideMenuCtrl',
     abstract:true
   });
 
-$urlRouterProvider.otherwise('/ac/entities');
+  $urlRouterProvider.otherwise('/ac/entities');
 
 });

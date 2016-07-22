@@ -1,9 +1,9 @@
 <ion-view title="Entities" id="entities" class=" ">
-    <ion-content padding="true" class="has-header">
-        <ion-list id="entities-list" class=" manual-list-fullwidth ">
-            <ion-item ng-repeat="entity in entities">
-                {{entity.name}}
-            </ion-item>
-        </ion-list>
-    </ion-content>
+   <ion-content padding="true" class="has-header">
+      <ion-list id="entities-list" class="manual-list-fullwidth animate-ripple">
+         <ion-item ng-repeat="entity in entities" ng-click="open(entity)" class="ink">
+            {{entity.name}}
+         </ion-item>
+      </ion-list>
+   </ion-content>
 </ion-view>

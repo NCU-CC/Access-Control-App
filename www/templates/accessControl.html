@@ -9,13 +9,13 @@
         <ion-nav-view name="ac"></ion-nav-view>
     </ion-side-menu-content>
     <ion-side-menu side="left" id="ac">
-        <ion-header-bar class="bar-positive">
-            <div class="title">Access Control</div>
+        <ion-header-bar class="dark-bg bar-header disable-user-behavior expanded">
+           <h2 class="menu-bottom">{{user.id}}</h2>
         </ion-header-bar>
-        <ion-content padding="false" class="side-menu-left has-header">
-            <ion-list id="accessControl-list" class=" ">
-                <ion-item id="accessControl-entities" ui-sref="accessControl.entities" menu-close="" class="  ">Entities</ion-item>
-                <ion-item id="accessControl-users" ui-sref="accessControl.users" menu-close="" class="  ">Users</ion-item>
+        <ion-content padding="false" class="side-menu-left has-expanded-header stable-bg has-header">
+            <ion-list id="accessControl-list" class="animate-ripple">
+                <ion-item id="accessControl-entities" ui-sref="accessControl.entities" ng-if="user.type === 'admin'" menu-close="" class="ink">Entities</ion-item>
+                <ion-item id="accessControl-users" ui-sref="accessControl.users" ng-if="user.type === 'admin'" menu-close="" class="ink">Users</ion-item>
             </ion-list>
         </ion-content>
     </ion-side-menu>

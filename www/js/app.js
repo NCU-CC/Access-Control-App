@@ -7,7 +7,7 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.services', 'app.directives', 'ionic-material'])
 
-.run(function($ionicPlatform, OAuth) {
+.run(function($rootScope, $ionicPlatform, OAuth, DoorClient, Material) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -21,7 +21,14 @@ angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.services',
     }
 
     OAuth.configure(window.config.oauth).getAccessToken(function(accessToken) {
-       console.log('access_token: ' + accessToken);
+      DoorClient.configure({
+         baseUrl: window.config.doorUrl,
+         accessToken: accessToken
+      });
     });
+
+    $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams, options) {
+       Material.de();
+    })
   });
-})
+});

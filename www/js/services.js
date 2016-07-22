@@ -15,9 +15,9 @@ angular.module('app.services', [])
    ];
 
    this.configure = function(params) {
-      this.config = params;
+      config = params;
       angular.forEach(requiredKeys, (key) => {
-         if (! this.config[key]) {
+         if (! config[key]) {
             throw new Error(`Missing parameter: ${key}.`);
          }
       });
@@ -25,10 +25,10 @@ angular.module('app.services', [])
    };
 
    this.authorize = function() {
-      var scopeQueryString = 'scope=' + this.config.scopes[0];
-      for (var i = 1; i < this.config.scopes.length; ++i)
-         scopeQueryString += '+' + this.config.scopes[i];
-      window.open(this.config.authorizeUrl + '?response_type=code&' + scopeQueryString + '&client_id=' + this.config.clientId);
+      var scopeQueryString = 'scope=' + config.scopes[0];
+      for (var i = 1; i < config.scopes.length; ++i)
+         scopeQueryString += '+' + config.scopes[i];
+      window.open(config.authorizeUrl + '?response_type=code&' + scopeQueryString + '&client_id=' + config.clientId);
       ionic.Platform.exitApp();
    }
 
@@ -48,32 +48,132 @@ angular.module('app.services', [])
             if (typeof localStorage.tokenData === "undefined" ) {
                this.authorize();
             } else {
-               this.tokenData = JSON.parse(localStorage.tokenData);
-               if (new Date().getTime() / 1000 > this.tokenData.expiredAt - 60) {
-                  this.refreshToken(callback);
+               tokenData = JSON.parse(localStorage.tokenData);
+               if (new Date().getTime() / 1000 > tokenData.expiredAt - 60) {
+                  refreshToken(callback);
                } else {
-                  callback(this.tokenData.accessToken);
+                  callback(tokenData.accessToken);
                }
             }
          } else {
             $http({
                method: 'POST',
-               url: this.config.tokenUrl,
-               data: `grant_type=authorization_code&code=${code[1]}&client_id=${this.config.clientId}&client_secret=${this.config.clientSecret}`,
+               url: config.tokenUrl,
+               data: `grant_type=authorization_code&code=${code[1]}&client_id=${config.clientId}&client_secret=${config.clientSecret}`,
                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             }).then(function(response) {
-               console.log(response.data);
-               this.tokenData = {
+               console.log(response);
+               tokenData = {
                   accessToken: response.data.access_token,
                   refreshToken: response.data.refresh_token,
                   expiredAt: response.data.expires_in + new Date().getTime() / 1000
                };
-               localStorage.tokenData = JSON.stringify(this.tokenData);
-               callback(this.tokenData.accessToken);
+               localStorage.tokenData = JSON.stringify(tokenData);
+               callback(tokenData.accessToken);
             }, function(response) {
-               console.log(response.data);
+               console.log(response);
             });
          }
       }.bind(this))
    }
+}])
+
+.service('DoorClient', ['$http', function($http) {
+   var accessToken;
+   var baseUrl;
+   var queue = [];
+   var user;
+
+   this.configure = function(params) {
+      baseUrl = params.baseUrl;
+      accessToken = params.accessToken;
+      this.execQueue();
+   };
+
+   this.enqueue = function(method, path, callback, params) {
+      queue.push({
+         method: method,
+         path: path,
+         callback: callback,
+         params: params
+      });
+   };
+
+   this.execQueue = function() {
+      angular.forEach(queue, function(request) {
+         this.request(request.method, request.path, request.callback, request.params);
+      }.bind(this));
+      queue = null;
+   };
+
+   this.getUsers = function(callback) {
+      this.request('GET', '/users', callback);
+   };
+
+   this.getUserEntities = function(callback) {
+      this.getWhoAmI(function(user) {
+         this.request('GET', `/users/${user.id}/authorized_entities`, callback);
+      }.bind(this));
+   };
+
+   this.getEntities = function(callback) {
+      this.request('GET', '/entities', callback);
+   };
+
+   this.postAuthToken = function(id, callback) {
+      this.request('POST', `/entities/${id}/authorization_tokens`, callback, '');
+   };
+
+   this.getWhoAmI = function(callback) {
+      if (typeof user === 'undefined') {
+         this.request('GET', '/whoami', function(data) {
+            user = {
+               type: data.type,
+               id: data.uid
+            };
+            callback(user);
+         });
+      } else
+         callback(user);
+   };
+
+   this.request = function(method, path, callback, params) {
+      if (typeof baseUrl === 'undefined') {
+         this.enqueue(method, path, callback, params);
+      } else {
+         $http({
+            method: method,
+            url: baseUrl + path,
+            data: params,
+            headers: {Authorization: `Bearer ${accessToken}`}
+         }).then(function(response) {
+            console.log(response);
+            callback(response.data);
+         }, function(response) {
+            console.log(response);
+         });
+      }
+   };
+}])
+
+.service('Material', ['$timeout', 'ionicMaterialInk', 'ionicMaterialMotion', function($timeout, ionicMaterialInk, ionicMaterialMotion) {
+   this.reset = function() {
+      var inClass = document.querySelectorAll('.in');
+      for (var i = 0; i < inClass.length; i++) {
+         inClass[i].classList.remove('in');
+         inClass[i].removeAttribute('style');
+      }
+      var done = document.querySelectorAll('.done');
+      for (var j = 0; j < done.length; j++) {
+         done[j].classList.remove('done');
+         done[j].removeAttribute('style');
+      }
+   }
+   this.de = function() {
+      this.reset();
+      $timeout(function() {
+         ionicMaterialInk.displayEffect();
+         ionicMaterialMotion.ripple();
+      }, 0)
+   };
 }]);
