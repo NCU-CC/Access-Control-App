@@ -50,7 +50,7 @@ angular.module('app.controllers', ['app.services'])
 .controller('sideMenuCtrl', function($scope, $ionicPopup, Material, AccessControl, OAuth, DoorClient) {
    $scope.logout = function() {
       $ionicPopup.show({
-         title: 'Logout?',
+         title: 'Log out?',
          scope: $scope,
          buttons: [
             {text: 'No'},

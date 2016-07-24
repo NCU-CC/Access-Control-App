@@ -148,7 +148,8 @@ angular.module('app.services', [])
             this.request('GET', '/whoami', function(data) {
                user = {
                   type: data.type,
-                  id: data.uid
+                  id: data.uid,
+                  description: data.description
                };
                angular.forEach(whoAmICallbacks, function(callback) {
                   callback(user);
