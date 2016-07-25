@@ -49,7 +49,20 @@ angular.module('app.services', [])
    }
 
    this.refreshToken = function(callback) {
-      // Todo: Implement refresh token.
+      $http({
+         method: 'POST',
+         url: config.tokenUrl,
+         data: `grant_type=refresh_token&refresh_token=${tokenData.refreshToken}&client_id=${config.clientId}&client_secret=${config.clientSecret}`,
+         headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+      }).then(function(response) {
+         console.log(response);
+         tokenData.accessToken = response.data.access_token,
+         tokenData.expiredAt = response.data.expires_in + new Date().getTime() / 1000
+         localStorage.tokenData = JSON.stringify(tokenData);
+         callback(tokenData.accessToken);
+      }, function(response) {
+         console.log(response);
+      });
    }
 
    this.getAccessToken = function(callback) {
@@ -66,7 +79,7 @@ angular.module('app.services', [])
             } else {
                tokenData = JSON.parse(localStorage.tokenData);
                if (new Date().getTime() / 1000 > tokenData.expiredAt - 60) {
-                  refreshToken(callback);
+                  this.refreshToken(callback);
                } else {
                   callback(tokenData.accessToken);
                }

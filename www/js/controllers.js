@@ -64,13 +64,29 @@ angular.module('app.controllers', ['app.services'])
    });
 })
 
-.controller('usersCtrl', function($scope, $rootScope, Material, DoorClient) {
-   $scope.list = {
-      canSwipe: true
+.controller('usersCtrl', function($scope, $rootScope, $state, $ionicListDelegate, $ionicPopup, Material, DoorClient) {
+   $scope.edit = function(user) {
+      $rootScope.editUser = user;
+      $ionicListDelegate.closeOptionButtons();
+      $state.go('^.editUser');
    };
    $scope.remove = function(index) {
-      DoorClient.deleteUser($scope.users[index].id);
-      $scope.users.splice(index, 1);
+      $ionicPopup.show({
+         title: `Remove ${$scope.users[index].description}?`,
+         scope: $scope,
+         buttons: [
+            {text: 'No'},
+            {
+               text: 'Yes',
+               type: 'button-positive',
+               onTap: function(e) {
+                  DoorClient.deleteUser($scope.users[index].id);
+                  $scope.users.splice(index, 1);
+               }
+            }
+         ]
+      });
+      $ionicListDelegate.closeOptionButtons();
    };
    $rootScope.showUsers = function(){
       DoorClient.getUsers(function(data) {
@@ -85,6 +101,16 @@ angular.module('app.controllers', ['app.services'])
    $scope.newUser = {};
    $scope.createUser = function(user) {
       DoorClient.postUser(user, function() {
+         $rootScope.showUsers();
+      });
+   };
+   Material.de();
+})
+
+.controller('editUserCtrl', function($scope, $rootScope, Material, DoorClient) {
+   $scope.editUser = $rootScope.editUser;
+   $scope.save = function(user) {
+      DoorClient.putUser(user, function() {
          $rootScope.showUsers();
       });
    };

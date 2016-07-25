@@ -1,0 +1,20 @@
+<ion-view title="Edit User" id="edit-user">
+   <ion-nav-buttons side="right">
+      <button ng-click="save(editUser)" ui-sref="accessControl.users" class="button button-icon button-clear ion-android-done"></button>
+   </ion-nav-buttons>
+   <ion-content padding="true" class="has-header">
+      <ion-list id="edit-user-list" class="manual-list-fullwidth">
+         <label class="item item-input">
+            <span class="input-label">Id</span>
+            <input type="text" ng-model="editUser.id" disabled />
+         </label>
+         <label class="item item-input">
+            <span class="input-label">Description</span>
+            <input type="text" ng-model="editUser.description" />
+         </label>
+         <ion-toggle ng-model="editUser.type" ng-true-value="'admin'" ng-false-value="'common'">
+            Admin
+         </ion-toggle>
+      </ion-list>
+   </ion-content>
+</ion-view>

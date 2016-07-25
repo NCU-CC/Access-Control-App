@@ -43,6 +43,16 @@ angular.module('app.routes', [])
             controller: 'createUserCtrl'
          }
       }
+   })
+
+   .state('accessControl.editUser', {
+      url: '/editUser',
+      views: {
+         'ac': {
+            templateUrl: 'templates/editUser.html',
+            controller: 'editUserCtrl'
+         }
+      }
    });
 
    $urlRouterProvider.otherwise('/ac/entities');

@@ -1,12 +1,13 @@
 <ion-view title="Users" id="users">
    <ion-content padding="true" class="has-header">
-      <ion-list id="users-list" can-swipe="list.canSwipe" class="manual-list-fullwidth animate-ripple">
+      <ion-list id="users-list" class="manual-list-fullwidth animate-ripple">
          <ion-item ng-repeat="user in users" class="user-item ink">
             <div class="item-icon-left">
                <i ng-if="user.type == 'admin'" class="icon ion-settings"></i>
                {{user.description}} <small>{{user.id}}</small>
             </div>
-            <ion-option-button ng-click="remove($index)" class="delete-button button-assertive icon ion-android-delete"></ion-option-button>
+            <ion-option-button ng-click="edit(user)" class="option-button button-energized icon ion-android-create"></ion-option-button>
+            <ion-option-button ng-click="remove($index)" class="option-button button-assertive icon ion-android-delete"></ion-option-button>
          </ion-item>
       </ion-list>
       <button id="fab" ui-sref="accessControl.createUser" class="button button-fab button-positive button-fab-bottom-right icon ion-plus motion"></button>

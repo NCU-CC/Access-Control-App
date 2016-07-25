@@ -6,7 +6,7 @@ angular.module('app.directives', [])
       link : function($scope, $element) {
          $timeout(function() {
             $element[0].focus();
-         }, 500);
+         }, 800);
       }
    }
 }]);
