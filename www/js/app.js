@@ -8,30 +8,36 @@
 angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.services', 'app.directives', 'ionic-material'])
 
 .run(function($rootScope, $ionicPlatform, $timeout, AccessControl, Material) {
-  $ionicPlatform.ready(function() {
-    // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
-    // for form inputs)
-    if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
-      cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
-      cordova.plugins.Keyboard.disableScroll(true);
-    }
-    if (window.StatusBar) {
-      // org.apache.cordova.statusbar required
-      StatusBar.styleDefault();
-    }
+   $ionicPlatform.ready(function() {
+      // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
+      // for form inputs)
+      if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
+         cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
+         cordova.plugins.Keyboard.disableScroll(true);
+      }
+      if (window.StatusBar) {
+         // org.apache.cordova.statusbar required
+         StatusBar.styleDefault();
+      }
 
-    AccessControl.initialize();
+      AccessControl.initialize();
 
-    $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams, options) {
-       if (fromState.name == 'accessControl.users')
-          document.getElementById('fab').classList.add('motion');
-    });
-    $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams) {
-       Material.rede();
-       if (toState.name == 'accessControl.users')
-          $timeout(function() {
-             document.getElementById('fab').classList.remove('motion');
-          }, 0);
-    });
-  });
+      $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams, options) {
+         switch (fromState.name) {
+            case 'accessControl.users':
+               document.getElementById('fab').classList.add('motion');
+               break;
+         }
+      });
+      $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams) {
+         Material.rede();
+         switch (toState.name) {
+            case 'accessControl.users':
+               $timeout(function() {
+                  document.getElementById('fab').classList.remove('motion');
+               }, 0);
+               break;
+         }
+      });
+   });
 });

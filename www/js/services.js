@@ -127,10 +127,29 @@ angular.module('app.services', [])
       this.request('GET', '/users', callback);
    };
 
+   this.postUser = function(user, callback) {
+      this.request('POST', '/users', callback, {
+         id: user.id,
+         description: user.description,
+         type: user.type
+      });
+   }
+
    this.getUserEntities = function(callback) {
       this.getWhoAmI(function(user) {
          this.request('GET', `/users/${user.id}/authorized_entities`, callback);
       }.bind(this));
+   };
+
+   this.putUser = function(user, callback) {
+      this.request('PUT', `/users/${user.id}`, callback, {
+         description: user.description,
+         type: user.type
+      });
+   }
+
+   this.deleteUser = function(id, callback) {
+      this.request('DELETE', `/users/${id}`, callback);
    };
 
    this.getEntities = function(callback) {
@@ -152,11 +171,12 @@ angular.module('app.services', [])
                   description: data.description
                };
                angular.forEach(whoAmICallbacks, function(callback) {
-                  callback(user);
+                  if (typeof callback === 'function')
+                     callback(user);
                });
             });
          }
-      } else
+      } else if (typeof callback === 'function')
          callback(user);
    };
 
@@ -171,9 +191,11 @@ angular.module('app.services', [])
             headers: {Authorization: `Bearer ${accessToken}`}
          }).then(function(response) {
             console.log(response);
-            callback(response.data);
+            if (typeof callback === 'function')
+               callback(response.data);
          }, function(response) {
-            console.log(response);
+            if (typeof callback === 'function')
+               console.log(response);
          });
       }
    };

@@ -1,0 +1,20 @@
+<ion-view title="Create User" id="create-user">
+   <ion-nav-buttons side="right">
+      <button ng-click="createUser(newUser)" ui-sref="accessControl.users" class="button button-icon button-clear ion-android-done"></button>
+   </ion-nav-buttons>
+   <ion-content padding="true" class="has-header">
+      <ion-list id="create-user-list" class="manual-list-fullwidth">
+         <label class="item item-input">
+            <span class="input-label">Id</span>
+            <input type="text" ng-model="newUser.id" auto-focus />
+         </label>
+         <label class="item item-input">
+            <span class="input-label">Description</span>
+            <input type="text" ng-model="newUser.description" />
+         </label>
+         <ion-toggle ng-model="newUser.type" ng-true-value="'admin'" ng-false-value="'common'">
+            Admin
+         </ion-toggle>
+      </ion-list>
+   </ion-content>
+</ion-view>
