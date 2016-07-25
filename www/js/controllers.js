@@ -66,7 +66,7 @@ angular.module('app.controllers', ['app.services'])
 
 .controller('usersCtrl', function($scope, $rootScope, $state, $ionicListDelegate, $ionicPopup, Material, DoorClient) {
    $scope.edit = function(user) {
-      $rootScope.editUser = user;
+      $rootScope.editUser = angular.copy(user);
       $ionicListDelegate.closeOptionButtons();
       $state.go('^.editUser');
    };
