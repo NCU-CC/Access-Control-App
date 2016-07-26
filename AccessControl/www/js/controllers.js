@@ -43,7 +43,7 @@ angular.module('app.controllers', ['app.services'])
    };
    $scope.open = function(entity) {
       $ionicPopup.show({
-         title: `Open ${entity.name}?`,
+         title: 'Open ' + entity.name + '?',
          scope: $scope,
          buttons: [
             {text: 'No'},
@@ -72,7 +72,7 @@ angular.module('app.controllers', ['app.services'])
    };
    $scope.remove = function(index) {
       $ionicPopup.show({
-         title: `Remove ${$scope.users[index].description}?`,
+         title: 'Remove ' + $scope.users[index].description + '?',
          scope: $scope,
          buttons: [
             {text: 'No'},

@@ -27,9 +27,9 @@ angular.module('app.services', [])
 
    this.configure = function(params) {
       config = params;
-      angular.forEach(requiredKeys, (key) => {
+      angular.forEach(requiredKeys, function(key) {
          if (! config[key]) {
-            throw new Error(`Missing parameter: ${key}.`);
+            throw new Error('Missing parameter: ' + key + '.');
          }
       });
       return this;
@@ -52,7 +52,7 @@ angular.module('app.services', [])
       $http({
          method: 'POST',
          url: config.tokenUrl,
-         data: `grant_type=refresh_token&refresh_token=${tokenData.refreshToken}&client_id=${config.clientId}&client_secret=${config.clientSecret}`,
+         data: 'grant_type=refresh_token&refresh_token=' + tokenData.refreshToken + '&client_id=' + config.clientId + '&client_secret=' + config.clientSecret,
          headers: {'Content-Type': 'application/x-www-form-urlencoded'}
       }).then(function(response) {
          console.log(response);
@@ -88,7 +88,7 @@ angular.module('app.services', [])
             $http({
                method: 'POST',
                url: config.tokenUrl,
-               data: `grant_type=authorization_code&code=${code[1]}&client_id=${config.clientId}&client_secret=${config.clientSecret}`,
+               data: 'grant_type=authorization_code&code=' + code[1] + '&client_id=' + config.clientId + '&client_secret=' + config.clientSecret,
                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             }).then(function(response) {
                console.log(response);
@@ -150,19 +150,19 @@ angular.module('app.services', [])
 
    this.getUserEntities = function(callback) {
       this.getWhoAmI(function(user) {
-         this.request('GET', `/users/${user.id}/authorized_entities`, callback);
+         this.request('GET', '/users/' + user.id + '/authorized_entities', callback);
       }.bind(this));
    };
 
    this.putUser = function(user, callback) {
-      this.request('PUT', `/users/${user.id}`, callback, {
+      this.request('PUT', '/users/' + user.id, callback, {
          description: user.description,
          type: user.type
       });
    }
 
    this.deleteUser = function(id, callback) {
-      this.request('DELETE', `/users/${id}`, callback);
+      this.request('DELETE', '/users/' + id, callback);
    };
 
    this.getEntities = function(callback) {
@@ -170,7 +170,7 @@ angular.module('app.services', [])
    };
 
    this.postAuthToken = function(id, callback) {
-      this.request('POST', `/entities/${id}/authorization_tokens`, callback, '');
+      this.request('POST', '/entities/' + id + '/authorization_tokens', callback, '');
    };
 
    this.getWhoAmI = function(callback) {
@@ -201,7 +201,7 @@ angular.module('app.services', [])
             method: method,
             url: baseUrl + path,
             data: params,
-            headers: {Authorization: `Bearer ${accessToken}`}
+            headers: {Authorization: 'Bearer ' + accessToken}
          }).then(function(response) {
             console.log(response);
             if (typeof callback === 'function')
