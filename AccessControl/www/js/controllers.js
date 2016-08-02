@@ -98,7 +98,11 @@ angular.module('app.controllers', ['app.services'])
 })
 
 .controller('createUserCtrl', function($scope, $rootScope, Material, DoorClient) {
-   $scope.newUser = {};
+   $scope.newUser = {
+      id: '',
+      description: '',
+      type: 'common'
+   };
    $scope.createUser = function(user) {
       DoorClient.postUser(user, function() {
          $rootScope.showUsers();
