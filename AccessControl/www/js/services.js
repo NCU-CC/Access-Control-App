@@ -222,8 +222,8 @@ angular.module('app.services', [])
             if (typeof callback === 'function')
                callback(response.data);
          }, function(response) {
-            if (typeof callback === 'function')
-               console.log(response);
+            window.plugins.toast.showShortBottom('Something went wrong.');
+            console.log(response);
          });
       }
    };
