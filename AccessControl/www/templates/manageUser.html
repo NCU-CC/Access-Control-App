@@ -1,0 +1,9 @@
+<ion-view title="{{manageUser.description}}" id="manage-user">
+   <ion-content padding="true" class="has-header">
+      <ion-list id="manage-user-list" class="manual-list-fullwidth animate-ripple">
+         <ion-toggle ng-repeat="entity in entities" ng-model="entity.authorized" ng-change="update(entity)" class="ink">
+            {{entity.name}}
+         </ion-toggle>
+      </ion-list>
+   </ion-content>
+</ion-view>

@@ -1,7 +1,8 @@
 <ion-view title="Users" id="users">
    <ion-content padding="true" class="has-header">
+      <ion-refresher pulling-text="Refresh" on-refresh="refresh()"></ion-refresher>
       <ion-list id="users-list" class="manual-list-fullwidth animate-ripple">
-         <ion-item ng-repeat="user in users" class="user-item ink">
+         <ion-item ng-repeat="user in users" class="user-item ink" ng-click="manage(user)">
             <div class="item-icon-left">
                <i ng-if="user.type == 'admin'" class="icon ion-settings"></i>
                {{user.description}} <small>{{user.id}}</small>

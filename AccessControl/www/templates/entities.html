@@ -1,5 +1,6 @@
 <ion-view title="Entities" id="entities" class=" ">
    <ion-content padding="true" class="has-header">
+      <ion-refresher pulling-text="Refresh" on-refresh="refresh()"></ion-refresher>
       <ion-list id="entities-list" class="manual-list-fullwidth animate-ripple">
          <ion-item ng-repeat="entity in entities" ng-click="open(entity)" class="ink">
             {{entity.name}}

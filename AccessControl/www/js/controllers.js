@@ -58,13 +58,28 @@ angular.module('app.controllers', ['app.services'])
       });
       Material.de();
    };
-   DoorClient.getUserEntities(function(data) {
-      $scope.entities = data.content;
-      Material.rede();
-   });
+   $scope.refresh = function() {
+      $scope.show(function() {
+         $scope.$broadcast('scroll.refreshComplete');
+      });
+   };
+   $scope.show = function(callback) {
+      DoorClient.getMyEntities(function(data) {
+         $scope.entities = data.content;
+         if (typeof callback === 'function')
+            callback();
+         Material.rede();
+      });
+   };
+   $scope.show();
 })
 
 .controller('usersCtrl', function($scope, $rootScope, $state, $ionicListDelegate, $ionicPopup, Material, DoorClient) {
+   $scope.manage = function(user) {
+      $rootScope.manageUser = angular.copy(user);
+      $ionicListDelegate.closeOptionButtons();
+      $state.go('^.manageUser');
+   };
    $scope.edit = function(user) {
       $rootScope.editUser = angular.copy(user);
       $ionicListDelegate.closeOptionButtons();
@@ -88,9 +103,16 @@ angular.module('app.controllers', ['app.services'])
       });
       $ionicListDelegate.closeOptionButtons();
    };
-   $rootScope.showUsers = function(){
+   $scope.refresh = function() {
+      $rootScope.showUsers(function() {
+         $scope.$broadcast('scroll.refreshComplete');
+      });
+   };
+   $rootScope.showUsers = function(callback){
       DoorClient.getUsers(function(data) {
          $scope.users = data.content;
+         if (typeof callback === 'function')
+            callback();
          Material.rede();
       });
    };
@@ -119,4 +141,33 @@ angular.module('app.controllers', ['app.services'])
       });
    };
    Material.de();
+})
+
+.controller('manageUserCtrl', function($scope, $rootScope, Material, DoorClient) {
+   $scope.manageUser = $rootScope.manageUser;
+   $scope.update = function(entity) {
+      if (entity.authorized) {
+         DoorClient.postAuthorization($scope.manageUser, entity, function() {
+            window.plugins.toast.showShortBottom(entity.name + ' has been authorized.');
+         });
+      } else {
+         DoorClient.deleteAuthorization($scope.manageUser, entity, function() {
+            window.plugins.toast.showShortBottom(entity.name + ' has been deauthorized.');
+         });
+      }
+   };
+   DoorClient.getEntities(function(data) {
+      $scope.entities = {};
+      angular.forEach(data.content, function(entity) {
+         entity.authorized = false;
+         $scope.entities[entity.id] = entity;
+      })
+      DoorClient.getUserEntities($scope.manageUser, function(data) {
+         angular.forEach(data.content, function(entity) {
+            if (typeof $scope.entities[entity.id] !== 'undefined')
+               $scope.entities[entity.id].authorized = true;
+         });
+         Material.rede();
+      });
+   });
 });

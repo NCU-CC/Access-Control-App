@@ -24,6 +24,10 @@
     {
       "locator": "https://github.com/Initsogar/cordova-webintent.git",
       "id": "com.borismus.webintent"
+    },
+    {
+      "locator": "https://github.com/EddyVerbruggen/Toast-PhoneGap-Plugin.git",
+      "id": "cordova-plugin-x-toast"
     }
   ],
   "cordovaPlatforms": [

@@ -148,10 +148,14 @@ angular.module('app.services', [])
       });
    }
 
-   this.getUserEntities = function(callback) {
+   this.getMyEntities = function(callback) {
       this.getWhoAmI(function(user) {
-         this.request('GET', '/users/' + user.id + '/authorized_entities', callback);
+         this.getUserEntities(user, callback)
       }.bind(this));
+   };
+
+   this.getUserEntities = function(user, callback) {
+      this.request('GET', '/users/' + user.id + '/authorized_entities', callback);
    };
 
    this.putUser = function(user, callback) {
@@ -167,6 +171,17 @@ angular.module('app.services', [])
 
    this.getEntities = function(callback) {
       this.request('GET', '/entities', callback);
+   };
+
+   this.postAuthorization = function(user, entity, callback) {
+      this.request('POST', '/authorizations', callback, {
+         authorizeeId: user.id,
+         entityId: entity.id
+      });
+   };
+
+   this.deleteAuthorization = function(user, entity, callback) {
+      this.request('DELETE', '/authorizations?authorizee_id=' + user.id + '&entity_id=' + entity.id, callback);
    };
 
    this.postAuthToken = function(id, callback) {

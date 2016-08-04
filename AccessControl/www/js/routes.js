@@ -53,6 +53,16 @@ angular.module('app.routes', [])
             controller: 'editUserCtrl'
          }
       }
+   })
+
+   .state('accessControl.manageUser', {
+      url: '/manageUser',
+      views: {
+         'ac': {
+            templateUrl: 'templates/manageUser.html',
+            controller: 'manageUserCtrl'
+         }
+      }
    });
 
    $urlRouterProvider.otherwise('/ac/entities');
