@@ -11,6 +11,7 @@
             <ion-option-button ng-click="remove($index)" class="option-button button-assertive icon ion-android-delete"></ion-option-button>
          </ion-item>
       </ion-list>
-      <button id="fab" ui-sref="accessControl.createUser" class="button button-fab button-positive button-fab-bottom-right icon ion-plus motion"></button>
+      <ion-infinite-scroll ng-if="page < limit" on-infinite="load()" distance="1%"></ion-infinite-scroll>
    </ion-content>
+   <button id="fab" ui-sref="accessControl.createUser" class="button button-fab button-positive button-fab-bottom-right icon ion-plus motion"></button>
 </ion-view>

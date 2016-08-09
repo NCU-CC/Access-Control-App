@@ -1,6 +1,6 @@
 angular.module('app.controllers', ['app.services'])
 
-.controller('sideMenuCtrl', function($scope, $ionicPopup, Material, AccessControl, OAuth, DoorClient) {
+.controller('sideMenuCtrl', ['$scope', '$ionicPopup', 'Material', 'AccessControl', 'OAuth', 'DoorClient', function($scope, $ionicPopup, Material, AccessControl, OAuth, DoorClient) {
    $scope.logout = function() {
       $ionicPopup.show({
          title: 'Log out?',
@@ -22,7 +22,7 @@ angular.module('app.controllers', ['app.services'])
    DoorClient.getWhoAmI(function(user) {
       $scope.user = user;
    });
-})
+}])
   
 .controller('entitiesCtrl', function($scope, $ionicPopup, Material, DoorClient) {
    $scope.showAuthToken = function(entity) {
@@ -108,15 +108,28 @@ angular.module('app.controllers', ['app.services'])
          $scope.$broadcast('scroll.refreshComplete');
       });
    };
+   $scope.load = function() {
+      DoorClient.getUsers(function(data) {
+         $scope.users = $scope.users.concat(data.content);
+         $scope.page++;
+         $scope.limit = data.pageMetadata.totalPages;
+         Material.de();
+         $scope.$broadcast('scroll.infiniteScrollComplete');
+      }, $scope.page);
+   };
    $rootScope.showUsers = function(callback){
       DoorClient.getUsers(function(data) {
          $scope.users = data.content;
+         $scope.page = 1;
+         $scope.limit = data.pageMetadata.totalPages;
          if (typeof callback === 'function')
             callback();
          Material.rede();
       });
    };
-   $rootScope.showUsers();
+   $scope.users = [];
+   $scope.page = 0;
+   $scope.limit = 1;
 })
 
 .controller('createUserCtrl', function($scope, $rootScope, Material, DoorClient) {

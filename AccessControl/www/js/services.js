@@ -136,8 +136,8 @@ angular.module('app.services', [])
       queue = null;
    };
 
-   this.getUsers = function(callback) {
-      this.request('GET', '/users', callback);
+   this.getUsers = function(callback, page) {
+      this.request('GET', '/users' + (typeof page === 'undefined' ? '' : '?page=' + page), callback);
    };
 
    this.postUser = function(user, callback) {
@@ -146,7 +146,7 @@ angular.module('app.services', [])
          description: user.description,
          type: user.type
       });
-   }
+   };
 
    this.getMyEntities = function(callback) {
       this.getWhoAmI(function(user) {
@@ -245,6 +245,7 @@ angular.module('app.services', [])
    this.de = function() {
       $timeout(function() {
          ionicMaterialInk.displayEffect();
+         ionicMaterialMotion.ripple();
       }, 0);
    }
    this.rede = function() {
