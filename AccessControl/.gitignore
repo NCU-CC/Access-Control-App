@@ -3,4 +3,5 @@ platforms/
 plugins/
 www/lib
 www/js/config.js
+res
 .io-config.json

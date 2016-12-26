@@ -1,6 +1,6 @@
 angular.module('app.services', [])
 
-.service('AccessControl', ['OAuth', 'DoorClient', function(OAuth, DoorClient) {
+.service('AccessControl', ['OAuth', 'DoorClient', 'NFC', function(OAuth, DoorClient, NFC) {
    this.initialize = function() {
       OAuth.configure(window.config.oauth).getAccessToken(function(accessToken) {
          DoorClient.configure({
@@ -8,6 +8,7 @@ angular.module('app.services', [])
             accessToken: accessToken
          });
       });
+      NFC.registerListener ();
    };
 }])
 
@@ -255,4 +256,25 @@ angular.module('app.services', [])
          ionicMaterialMotion.ripple();
       }, 0);
    };
+}])
+
+.service('NFC', ['DoorClient', 'Material', function(DoorClient, Material) {
+  this.registerListener = function () {
+    nfc.enabled(function () {
+      nfc.addMimeTypeListener ("text/entity/id",
+        function(nfcEvent) {
+            var tag = nfcEvent.tag;
+            ndefMessage = tag.ndefMessage;
+            var payload = nfc.bytesToString(ndefMessage[0].payload);
+
+            DoorClient.postAuthToken (payload, function(data) {
+              console.log (data.token);
+              var message = [
+                ndef.textRecord(data.token)
+              ];
+              nfc.share(message, function () {} , function () {});
+            });
+        }, function () {}, function (error) {});
+    }, function () {});
+  };
 }]);
