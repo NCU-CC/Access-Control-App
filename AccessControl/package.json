@@ -29,9 +29,12 @@
       "locator": "https://github.com/EddyVerbruggen/Toast-PhoneGap-Plugin.git",
       "id": "cordova-plugin-x-toast"
     },
-    "phonegap-nfc"
+    {
+      "locator": "https://github.com/chariotsolutions/phonegap-nfc.git",
+      "id": "phonegap-nfc"
+    }
   ],
   "cordovaPlatforms": [
-    "android"
+    "android@6.1.0"
   ]
 }
