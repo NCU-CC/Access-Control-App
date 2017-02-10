@@ -3,10 +3,11 @@
 TARGET = "
         </activity>
 "
+# please specify hostname in <hostname>
 INTENT_FILTER = %(
             <intent-filter android:label="OAuth for Access Control">
                 <action android:name="android.intent.action.VIEW" />
-                <data android:host="#host" android:path="/webapps/ac" android:scheme="http" />
+                <data android:host="<hostname>" android:path="/webapps/ac" android:scheme="http" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
