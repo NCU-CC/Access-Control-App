@@ -30,7 +30,7 @@
       "id": "cordova-plugin-x-toast"
     },
     {
-      "locator": "https://github.com/chariotsolutions/phonegap-nfc",
+      "locator": "https://github.com/chariotsolutions/phonegap-nfc.git",
       "id": "phonegap-nfc"
     }
   ],
