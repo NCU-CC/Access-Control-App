@@ -8,6 +8,11 @@ angular.module('app.routes', [])
    // Each state's controller can be found in controllers.js
    $stateProvider
 
+   .state('oauth', {
+      url: '/access_token={accessToken}&token_type={tokenType}&expires_in={expiresIn}',
+      template: '',
+   })
+
    .state('accessControl', {
       url: '/ac',
       templateUrl: 'templates/sideMenu.html',
@@ -64,7 +69,4 @@ angular.module('app.routes', [])
          }
       }
    });
-
-   $urlRouterProvider.otherwise('/ac/entities');
-
 });

@@ -1,17 +1,18 @@
 angular.module('app.services', [])
 
-.service('AccessControl', ['OAuth', 'DoorClient', function(OAuth, DoorClient) {
+.service('AccessControl', ['OAuth', 'DoorClient', '$state', function(OAuth, DoorClient, $state) {
    this.initialize = function() {
       OAuth.configure(window.config.oauth).getAccessToken(function(accessToken) {
          DoorClient.configure({
             baseUrl: window.config.doorUrl,
             accessToken: accessToken
          });
+         $state.go('accessControl.entities');
       });
    };
 }])
 
-.service('OAuth', ['$http', function($http){
+.service('OAuth', ['$http', '$state', '$stateParams', function($http, $state, $stateParams){
    const codeRegex = /code=([^#&]*)(?:$|[#&])/
    const errorRegex = /error=([^#&]*)(?:$|[#&])/
 
@@ -19,9 +20,8 @@ angular.module('app.services', [])
    var tokenData;
    var requiredKeys = [
      'authorizeUrl',
-     'tokenUrl',
      'clientId',
-     'clientSecret',
+     'redirectUri',
      'scopes'
    ];
 
@@ -44,66 +44,32 @@ angular.module('app.services', [])
       var scopeQueryString = 'scope=' + config.scopes[0];
       for (var i = 1; i < config.scopes.length; ++i)
          scopeQueryString += '+' + config.scopes[i];
-      window.open(config.authorizeUrl + '?response_type=code&' + scopeQueryString + '&client_id=' + config.clientId);
-      ionic.Platform.exitApp();
-   }
-
-   this.refreshToken = function(callback) {
-      $http({
-         method: 'POST',
-         url: config.tokenUrl,
-         data: 'grant_type=refresh_token&refresh_token=' + tokenData.refreshToken + '&client_id=' + config.clientId + '&client_secret=' + config.clientSecret,
-         headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-      }).then(function(response) {
-         console.log(response);
-         tokenData.accessToken = response.data.access_token,
-         tokenData.expiredAt = response.data.expires_in + new Date().getTime() / 1000
-         localStorage.tokenData = JSON.stringify(tokenData);
-         callback(tokenData.accessToken);
-      }, function(response) {
-         console.log(response);
-      });
+      window.location = config.authorizeUrl + '?response_type=token&' + scopeQueryString + '&client_id=' + config.clientId + '&redirect_uri=' + config.redirectUri;
    }
 
    this.getAccessToken = function(callback) {
-      window.plugins.webintent.getUri(function(uri){
-         var error = errorRegex.exec(uri);
-         if (error !== null && error[1] == 'access_denied') {
-            ionic.Platform.exitApp();
+      if ($state.is('oauth')) {
+         tokenData = {
+            accessToken: $stateParams.accessToken,
+            expiredAt: parseInt($stateParams.expiresIn) + new Date().getTime() / 1000
+         };
+         console.log(tokenData);
+         localStorage.tokenData = JSON.stringify(tokenData);
+         callback(tokenData.accessToken);
+      } else {
+         if (typeof localStorage.tokenData === "undefined" ) {
+            this.authorize();
             return;
-         }
-         var code = codeRegex.exec(uri)
-         if (code === null) {
-            if (typeof localStorage.tokenData === "undefined" ) {
-               this.authorize();
-            } else {
-               tokenData = JSON.parse(localStorage.tokenData);
-               if (new Date().getTime() / 1000 > tokenData.expiredAt - 60) {
-                  this.refreshToken(callback);
-               } else {
-                  callback(tokenData.accessToken);
-               }
-            }
          } else {
-            $http({
-               method: 'POST',
-               url: config.tokenUrl,
-               data: 'grant_type=authorization_code&code=' + code[1] + '&client_id=' + config.clientId + '&client_secret=' + config.clientSecret,
-               headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-            }).then(function(response) {
-               console.log(response);
-               tokenData = {
-                  accessToken: response.data.access_token,
-                  refreshToken: response.data.refresh_token,
-                  expiredAt: response.data.expires_in + new Date().getTime() / 1000
-               };
-               localStorage.tokenData = JSON.stringify(tokenData);
+            tokenData = JSON.parse(localStorage.tokenData);
+            if (new Date().getTime() / 1000 > tokenData.expiredAt - 600) {
+               this.authorize();
+               return;
+            } else {
                callback(tokenData.accessToken);
-            }, function(response) {
-               console.log(response);
-            });
+            }
          }
-      }.bind(this))
+      }
    }
 }])
 
@@ -155,7 +121,7 @@ angular.module('app.services', [])
    };
 
    this.getUserEntities = function(user, callback) {
-      this.request('GET', '/users/' + user.id + '/authorized_entities', callback);
+      this.request('GET', '/users/' + user.id + '/entities?authorized=true', callback);
    };
 
    this.putUser = function(user, callback) {

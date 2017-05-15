@@ -23,7 +23,7 @@ angular.module('app.controllers', ['app.services'])
       $scope.user = user;
    });
 }])
-  
+
 .controller('entitiesCtrl', function($scope, $ionicPopup, Material, DoorClient) {
    $scope.showAuthToken = function(entity) {
       DoorClient.postAuthToken(entity.id, function(data) {
