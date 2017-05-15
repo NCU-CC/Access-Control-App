@@ -4,12 +4,12 @@
     <description>
         Access Control
     </description>
-    <author email="c910335@gmail.com" href="https://github/c910335/">
+    <author email="c910335@gmail.com" href="https://github.com/c910335/">
       Tatsujin Chin
     </author>
     <content src="index.html" />
     <access origin="*" />
-    <allow-intent href="http://140.115.3.188/*" />
+    <allow-intent href="https://apitest.cc.ncu.edu.tw:5566/*" />
     <preference name="webviewbounce" value="false" />
     <preference name="UIWebViewBounce" value="false" />
     <preference name="DisallowOverscroll" value="true" />
