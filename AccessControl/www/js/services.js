@@ -23,6 +23,7 @@ angular.module('app.services', [])
      'tokenUrl',
      'clientId',
      'clientSecret',
+     'redirectUri',
      'scopes'
    ];
 
@@ -45,7 +46,7 @@ angular.module('app.services', [])
       var scopeQueryString = 'scope=' + config.scopes[0];
       for (var i = 1; i < config.scopes.length; ++i)
          scopeQueryString += '+' + config.scopes[i];
-      window.open(config.authorizeUrl + '?response_type=code&' + scopeQueryString + '&client_id=' + config.clientId);
+      window.open(config.authorizeUrl + '?response_type=code&' + scopeQueryString + '&client_id=' + config.clientId + '&redirect_uri=' + config.redirectUri);
       ionic.Platform.exitApp();
    }
 
@@ -156,7 +157,7 @@ angular.module('app.services', [])
    };
 
    this.getUserEntities = function(user, callback) {
-      this.request('GET', '/users/' + user.id + '/authorized_entities', callback);
+      this.request('GET', '/users/' + user.id + '/entities?authorized=true', callback);
    };
 
    this.putUser = function(user, callback) {
