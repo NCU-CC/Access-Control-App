@@ -90,7 +90,7 @@ angular.module('app.services', [])
             $http({
                method: 'POST',
                url: config.tokenUrl,
-               data: 'grant_type=authorization_code&code=' + code[1] + '&client_id=' + config.clientId + '&client_secret=' + config.clientSecret,
+               data: 'grant_type=authorization_code&code=' + code[1] + '&client_id=' + config.clientId + '&client_secret=' + config.clientSecret + '&redirect_uri=' + config.redirectUri,
                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
             }).then(function(response) {
                console.log(response);
