@@ -1,13 +1,12 @@
 angular.module('app.services', [])
 
-.service('AccessControl', ['OAuth', 'DoorClient', '$state', function(OAuth, DoorClient, $state) {
+.service('AccessControl', ['OAuth', 'DoorClient', '$state', function(OAuth, DoorClient) {
    this.initialize = function() {
       OAuth.configure(window.config.oauth).getAccessToken(function(accessToken) {
          DoorClient.configure({
             baseUrl: window.config.doorUrl,
             accessToken: accessToken
          });
-         $state.go('accessControl.entities');
       });
    };
 }])
@@ -56,6 +55,7 @@ angular.module('app.services', [])
          console.log(tokenData);
          localStorage.tokenData = JSON.stringify(tokenData);
          callback(tokenData.accessToken);
+         $state.go('accessControl.entities');
       } else {
          if (typeof localStorage.tokenData === "undefined" ) {
             this.authorize();
