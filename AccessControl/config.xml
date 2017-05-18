@@ -9,7 +9,7 @@
     </author>
     <content src="index.html" />
     <access origin="*" />
-    <allow-intent href="https://apitest.cc.ncu.edu.tw:5566/*" />
+    <allow-intent href="https://oauth.apitest.cc.ncu.edu.tw/*" />
     <preference name="webviewbounce" value="false" />
     <preference name="UIWebViewBounce" value="false" />
     <preference name="DisallowOverscroll" value="true" />
