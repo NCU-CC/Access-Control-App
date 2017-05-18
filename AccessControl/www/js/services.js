@@ -54,12 +54,13 @@ angular.module('app.services', [])
       $http({
          method: 'POST',
          url: config.tokenUrl,
-         data: 'grant_type=refresh_token&refresh_token=' + tokenData.refreshToken + '&client_id=' + config.clientId + '&client_secret=' + config.clientSecret,
+         data: 'grant_type=refresh_token&refresh_token=' + tokenData.refreshToken,
          headers: {'Content-Type': 'application/x-www-form-urlencoded'}
       }).then(function(response) {
          console.log(response);
-         tokenData.accessToken = response.data.access_token,
-         tokenData.expiredAt = response.data.expires_in + new Date().getTime() / 1000
+         tokenData.accessToken = response.data.access_token;
+         tokenData.refreshToken = response.data.refresh_token;
+         tokenData.expiredAt = response.data.expires_in + new Date().getTime() / 1000;
          localStorage.tokenData = JSON.stringify(tokenData);
          callback(tokenData.accessToken);
       }, function(response) {
