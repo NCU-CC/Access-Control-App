@@ -1,14 +1,15 @@
 angular.module('app.services', [])
 
-.service('AccessControl', ['OAuth', 'DoorClient', 'NFC', function(OAuth, DoorClient, NFC) {
+.service('AccessControl', ['OAuth', 'DoorClient', 'NFCIntent', 'NFCBeam', function(OAuth, DoorClient, NFCIntent, NFCBeam) {
    this.initialize = function() {
+      NFCIntent.registerListener();
       OAuth.configure(window.config.oauth).getAccessToken(function(accessToken) {
          DoorClient.configure({
             baseUrl: window.config.doorUrl,
             accessToken: accessToken
          });
+         NFCBeam.tokenReady();
       });
-      NFC.registerListener ();
    };
 }])
 
@@ -260,23 +261,41 @@ angular.module('app.services', [])
    };
 }])
 
-.service('NFC', ['DoorClient', 'Material', function(DoorClient, Material) {
+.service('NFCIntent', ['NFCBeam', function(NFCBeam) {
   this.registerListener = function () {
-    nfc.enabled(function () {
-      nfc.addMimeTypeListener ("text/entity/id",
-        function(nfcEvent) {
-            var tag = nfcEvent.tag;
-            ndefMessage = tag.ndefMessage;
-            var payload = nfc.bytesToString(ndefMessage[0].payload);
+    window.nfc.enabled(function() {
+      window.nfc.addMimeTypeListener("text/entity/id", function(nfcEvent) {
+        var nfctag = nfcEvent.tag;
+        var ndefMessage = nfctag.ndefMessage;
+        NFCBeam.saveEntityUUID(window.nfc.bytesToString(ndefMessage[0].payload));
+      }, null, null);
+    }, null);
+  };
+}])
 
-            DoorClient.postAuthToken (payload, function(data) {
-              console.log (data.token);
-              var message = [
-                ndef.textRecord(data.token)
-              ];
-              nfc.share(message, function () {} , function () {});
-            });
-        }, function () {}, function (error) {});
-    }, function () {});
+.service('NFCBeam', ['DoorClient', 'Material', function(DoorClient, Material) {
+  var tokenIsReady = false;
+  var entityUUID;
+
+  this.tokenReady = function () {
+    tokenIsReady = true;
+    if (typeof entityUUID != 'undefined' && entityUUID != "") {
+      this.beamBack();
+    }
+  };
+
+  this.saveEntityUUID = function (uuid) {
+    entityUUID = uuid;
+    if (tokenIsReady) {
+      this.beamBack();
+    }
+  };
+
+  this.beamBack = function () {
+    DoorClient.postAuthToken(entityUUID, function(data) {
+      window.plugins.toast.showShortBottom('Get code ' + data.token);
+      var message = [ window.ndef.textRecord(data.token) ];
+      window.nfc.share(message, null, null);
+    });
   };
 }]);
