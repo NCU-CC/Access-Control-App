@@ -220,7 +220,10 @@ angular.module('app.services', [])
             method: method,
             url: baseUrl + path,
             data: params,
-            headers: {Authorization: 'Bearer ' + accessToken}
+            headers: {
+              Authorization: 'Bearer ' + accessToken,
+              'X-NCU-NEW-OAUTH': '1'
+            }
          }).then(function(response) {
             console.log(response);
             if (typeof callback === 'function')
